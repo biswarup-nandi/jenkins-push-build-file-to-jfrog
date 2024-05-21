@@ -19,6 +19,7 @@ pipeline {
             steps {
                 sh '''
                 #!/bin/bash
+
                 # Check if pyenv is already installed
                 if [ ! -d "$HOME/.pyenv" ]; then
                     echo "pyenv not found, installing..."
@@ -30,13 +31,10 @@ pipeline {
                 # Install pyenv
                 curl https://pyenv.run | bash
 
-                # Add pyenv to PATH and initialize
-                echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
-                echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
-                echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
-
-                # Source bashrc to load pyenv
-                source ~/.bashrc
+                # Add pyenv to PATH and initialize for the current script
+                export PATH="$HOME/.pyenv/bin:$PATH"
+                eval "$(pyenv init --path)"
+                eval "$(pyenv virtualenv-init -)"
 
                 # Install Python if not already installed
                 if ! pyenv versions --bare | grep -q "^${PYTHON_VERSION}$"; then
@@ -51,8 +49,13 @@ pipeline {
             steps {
                 sh '''
                 #!/bin/bash
-                # Use the installed Python version and install pip
+                # Initialize pyenv for the current script
+                export PATH="$HOME/.pyenv/bin:$PATH"
+                eval "$(pyenv init --path)"
+                eval "$(pyenv virtualenv-init -)"
                 pyenv global ${PYTHON_VERSION}
+
+                # Use the installed Python version and install pip
                 python3.8 -m ensurepip --upgrade
                 python3.8 -m pip install --upgrade pip
 
@@ -66,8 +69,13 @@ pipeline {
             steps {
                 sh '''
                 #!/bin/bash
-                # Perform the project build steps
+                # Initialize pyenv for the current script
+                export PATH="$HOME/.pyenv/bin:$PATH"
+                eval "$(pyenv init --path)"
+                eval "$(pyenv virtualenv-init -)"
                 pyenv global ${PYTHON_VERSION}
+
+                # Perform the project build steps
                 python3.8 setup.py sdist bdist_wheel
                 '''
             }
