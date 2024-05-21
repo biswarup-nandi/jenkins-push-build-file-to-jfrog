@@ -18,18 +18,12 @@ pipeline {
         stage('Setup Python') {
             steps {
                 sh '''
-                # Install pyenv
-                curl https://pyenv.run | bash
-
-                # Add pyenv to PATH
-                echo \'export PATH="$HOME/.pyenv/bin:$PATH"\' >> ~/.bashrc
-                echo \'eval "$(pyenv init --path)"\' >> ~/.bashrc
-                echo \'eval "$(pyenv virtualenv-init -)"\' >> ~/.bashrc
-                source ~/.bashrc
-
-                # Install Python
-                pyenv install ${PYTHON_VERSION}
-                pyenv global ${PYTHON_VERSION}
+                # Download and install the specified Python version
+                sudo wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
+                sudo tar xzf Python-${PYTHON_VERSION}.tgz
+                cd Python-${PYTHON_VERSION}
+                sudo ./configure --enable-optimizations
+                sudo make altinstall
                 '''
             }
         }
