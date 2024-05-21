@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         ARTIFACTORY_URL = 'https://biswarupnandi.jfrog.io/artifactory'
-        ARTIFACTORY_REPO = 'api/pypi/dbx-dbx-python'
+        ARTIFACTORY_REPO = 'dbx-dbx-python'
         ARTIFACTORY_SERVER = 'jfrog-artifact-instance'
         PYTHON_VERSION = '3.10.12'
         DATABRICKS_HOST = 'https://accounts.cloud.databricks.com'
@@ -45,7 +45,7 @@ pipeline {
                     def uploadSpec = """{
                         "files": [{
                             "pattern": "dist/*.whl",
-                            "target": "${ARTIFACTORY_REPO}"
+                            "target": "${ARTIFACTORY_REPO}/"
                         }]
                     }"""
                     server.upload(uploadSpec)
