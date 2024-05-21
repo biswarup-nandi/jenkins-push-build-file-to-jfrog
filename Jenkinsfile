@@ -19,6 +19,10 @@ pipeline {
             steps {
                 sh '''
                     #!/bin/bash
+                    if [ -d "$HOME/.pyenv" ]; then
+                        echo "Removing existing .pyenv directory"
+                        rm -rf $HOME/.pyenv
+                    fi
                     curl https://pyenv.run | bash
                     export PATH="$HOME/.pyenv/bin:$PATH"
                     eval "$(pyenv init --path)"
