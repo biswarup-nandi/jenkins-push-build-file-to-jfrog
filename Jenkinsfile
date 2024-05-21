@@ -21,10 +21,10 @@ pipeline {
                     /usr/bin/python3 --version
                     /usr/bin/python3 -m venv venv
                     . venv/bin/activate
-                    /usr/bin/pip --version
-                    /usr/bin/pip install --upgrade pip
-                    /usr/bin/pip install wheel
-                    /usr/bin/pip install -r requirements.txt
+                    pip --version
+                    pip install --upgrade pip
+                    pip install wheel
+                    pip install -r requirements.txt
                 """
             }
         }
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 sh """
                     . venv/bin/activate
-                    /usr/bin/python3 setup.py bdist_wheel
+                    python setup.py bdist_wheel
                 """
             }
         }
