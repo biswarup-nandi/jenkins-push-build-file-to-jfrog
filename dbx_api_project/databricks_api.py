@@ -47,10 +47,10 @@ class DBX_UTILITY:
         }
 
         # Make the GET request to get Metastore ID
-        response = requests.get(f"{self.base_url}/clusters/metastore", headers=headers)
+        response = requests.get(f"{self.base_url}/metastores", headers=headers)
         
         if response.status_code == 200:
-            return response.json()['metastore_id']
+            return response.text
         else:
             response.raise_for_status()
 
@@ -61,8 +61,6 @@ def main():
     try:
         # Get the bearer token
         token = utility.refresh_token()
-
-        print(token)
 
         # Get Metastore ID
         if token:
