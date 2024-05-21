@@ -19,11 +19,11 @@ pipeline {
             steps {
                 sh '''
                 # Download and install the specified Python version
-                wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
-                tar xzf Python-${PYTHON_VERSION}.tgz
+                sudo wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
+                sudo tar xzf Python-${PYTHON_VERSION}.tgz
                 cd Python-${PYTHON_VERSION}
-                ./configure --enable-optimizations
-                make altinstall
+                sudo ./configure --enable-optimizations
+                sudo make altinstall
                 '''
             }
         }
