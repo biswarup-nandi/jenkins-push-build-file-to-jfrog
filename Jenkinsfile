@@ -5,7 +5,6 @@ pipeline {
         ARTIFACTORY_URL = 'https://biswarupnandi.jfrog.io/artifactory'
         ARTIFACTORY_REPO = 'api/pypi/dbx-dbx-python'
         PYTHON_VERSION = '3.8.10'
-        DATABRICKS_CONFIG_PROFILE = 'admin_profile'
         DATABRICKS_HOST = 'https://accounts.cloud.databricks.com'
         DATABRICKS_AUTH_TYPE = 'oauth-m2m'
         DATABRICKS_REGION = 'us-east-1'
@@ -18,13 +17,14 @@ pipeline {
         stage('Setup Python') {
             steps {
                 sh '''
+                #!/bin/bash
                 # Install pyenv
                 curl https://pyenv.run | bash
 
-                # Add pyenv to PATH
-                echo \'export PATH="$HOME/.pyenv/bin:$PATH"\' >> ~/.bashrc
-                echo \'eval "$(pyenv init --path)"\' >> ~/.bashrc
-                echo \'eval "$(pyenv virtualenv-init -)"\' >> ~/.bashrc
+                # Add pyenv to PATH and initialize
+                echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
+                echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
+                echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
                 source ~/.bashrc
 
                 # Install Python
@@ -37,7 +37,9 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
+                #!/bin/bash
                 # Use the installed Python version and install pip
+                pyenv global ${PYTHON_VERSION}
                 python3.8 -m ensurepip --upgrade
                 python3.8 -m pip install --upgrade pip
 
@@ -50,7 +52,9 @@ pipeline {
         stage('Build Project') {
             steps {
                 sh '''
+                #!/bin/bash
                 # Perform the project build steps
+                pyenv global ${PYTHON_VERSION}
                 python3.8 setup.py sdist bdist_wheel
                 '''
             }
