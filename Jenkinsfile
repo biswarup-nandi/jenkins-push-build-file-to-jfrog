@@ -17,22 +17,22 @@ pipeline {
     stages {
         stage('Install Pyenv and Pyenv-Virtualenv') {
             steps {
-                sh """
+                sh '''
                     #!/bin/bash
                     curl https://pyenv.run | bash
-                    export PATH="\$HOME/.pyenv/bin:\$PATH"
+                    export PATH="$HOME/.pyenv/bin:$PATH"
                     eval "$(pyenv init --path)"
                     eval "$(pyenv init -)"
                     eval "$(pyenv virtualenv-init -)"
-                """
+                '''
             }
         }
 
         stage('Setup Python') {
             steps {
-                sh """
+                sh '''
                     #!/bin/bash
-                    export PATH="\$HOME/.pyenv/bin:\$PATH"
+                    export PATH="$HOME/.pyenv/bin:$PATH"
                     eval "$(pyenv init --path)"
                     eval "$(pyenv init -)"
                     eval "$(pyenv virtualenv-init -)"
@@ -42,21 +42,21 @@ pipeline {
                     pip install --upgrade pip
                     pip install wheel
                     pip install -r requirements.txt
-                """
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                sh """
+                sh '''
                     #!/bin/bash
-                    export PATH="\$HOME/.pyenv/bin:\$PATH"
+                    export PATH="$HOME/.pyenv/bin:$PATH"
                     eval "$(pyenv init --path)"
                     eval "$(pyenv init -)"
                     eval "$(pyenv virtualenv-init -)"
                     pyenv activate venv
                     python setup.py bdist_wheel
-                """
+                '''
             }
         }
 
