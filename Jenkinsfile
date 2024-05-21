@@ -4,8 +4,7 @@ pipeline {
     environment {
         ARTIFACTORY_URL = 'https://biswarupnandi.jfrog.io/artifactory'
         ARTIFACTORY_REPO = 'api/pypi/dbx-dbx-python'
-        PYTHON_VERSION = '3.8.10'
-        DATABRICKS_CONFIG_PROFILE = 'admin_profile'
+        PYTHON_VERSION = '3.12.0'
         DATABRICKS_HOST = 'https://accounts.cloud.databricks.com'
         DATABRICKS_AUTH_TYPE = 'oauth-m2m'
         DATABRICKS_REGION = 'us-east-1'
@@ -19,6 +18,10 @@ pipeline {
             steps {
                 sh '''
                 #!/bin/bash
+
+                # Install required system libraries
+                sudo apt-get update
+                sudo apt-get install -y libssl-dev libreadline-dev zlib1g-dev libffi-dev libncurses5-dev libbz2-dev
 
                 # Check if pyenv is already installed
                 if [ ! -d "$HOME/.pyenv" ]; then
