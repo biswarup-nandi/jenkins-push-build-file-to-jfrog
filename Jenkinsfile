@@ -12,7 +12,6 @@ pipeline {
         DATABRICKS_ACCOUNT_ID = credentials('databricks-account-id')
         DATABRICKS_CLIENT_ID = credentials('databricks-client-id')
         DATABRICKS_CLIENT_SECRET = credentials('databricks-client-secret')
-        DATABRICKS_TOKEN = credentials('your-databricks-token') // Assuming you store the token as a Jenkins secret
     }
 
     stages {
