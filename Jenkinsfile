@@ -48,8 +48,16 @@ pipeline {
                             "target": "${ARTIFACTORY_REPO}/"
                         }]
                     }"""
-                    server.upload(uploadSpec)
+                    echo "Uploading wheel files to Artifactory..."
+                    def buildInfo = server.upload(uploadSpec)
+                    echo "Upload complete: ${buildInfo}"
                 }
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'dist/*.whl', allowEmptyArchive: true
             }
         }
     }
