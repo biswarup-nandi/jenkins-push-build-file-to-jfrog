@@ -18,12 +18,12 @@ pipeline {
         stage('Setup Python') {
             steps {
                 sh """
-                    python3 --version
-                    python3 -m venv venv
+                    /usr/bin/python3 --version
+                    /usr/bin/python3 -m venv venv
                     . venv/bin/activate
-                    pip install --upgrade pip
-                    pip install wheel
-                    pip install -r requirements.txt
+                    /usr/bin/pip install --upgrade pip
+                    /usr/bin/pip install wheel
+                    /usr/bin/pip install -r requirements.txt
                 """
             }
         }
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh """
                     . venv/bin/activate
-                    python setup.py bdist_wheel
+                    /usr/bin/python3 setup.py bdist_wheel
                 """
             }
         }
