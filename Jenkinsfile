@@ -19,20 +19,13 @@ pipeline {
                 sh '''
                 #!/bin/bash
 
-                # Install required system libraries
-                sudo apt-get update
-                sudo apt-get install -y libssl-dev libreadline-dev zlib1g-dev libffi-dev libncurses5-dev libbz2-dev
-
                 # Check if pyenv is already installed
                 if [ ! -d "$HOME/.pyenv" ]; then
                     echo "pyenv not found, installing..."
+                    curl https://pyenv.run | bash
                 else
-                    echo "pyenv already installed, removing and reinstalling..."
-                    rm -rf "$HOME/.pyenv"
+                    echo "pyenv already installed"
                 fi
-
-                # Install pyenv
-                curl https://pyenv.run | bash
 
                 # Add pyenv to PATH and initialize for the current script
                 export PATH="$HOME/.pyenv/bin:$PATH"
@@ -59,11 +52,11 @@ pipeline {
                 pyenv global ${PYTHON_VERSION}
 
                 # Use the installed Python version and install pip
-                python3.8 -m ensurepip --upgrade
-                python3.8 -m pip install --upgrade pip
+                python3.12 -m ensurepip --upgrade
+                python3.12 -m pip install --upgrade pip
 
                 # Install project dependencies
-                python3.8 -m pip install -r requirements.txt
+                python3.12 -m pip install -r requirements.txt
                 '''
             }
         }
@@ -79,7 +72,7 @@ pipeline {
                 pyenv global ${PYTHON_VERSION}
 
                 # Perform the project build steps
-                python3.8 setup.py sdist bdist_wheel
+                python3.12 setup.py sdist bdist_wheel
                 '''
             }
         }
@@ -87,7 +80,7 @@ pipeline {
         stage('Push to Artifactory') {
             steps {
                 script {
-                    def server = Artifactory.server 'jfrog-artifact-instance' // The ID of the Artifactory server you configured
+                    def server = Artifactory.server 'jfrog-artifact-instance'
                     def uploadSpec = """{
                         "files": [{
                             "pattern": "dist/*",
