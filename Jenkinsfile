@@ -5,7 +5,7 @@ pipeline {
         ARTIFACTORY_URL = 'https://biswarupnandi.jfrog.io/artifactory'
         ARTIFACTORY_REPO = 'api/pypi/dbx-dbx-python'
         ARTIFACTORY_SERVER = 'jfrog-artifact-instance'
-        PYTHON_VERSION = '3.12.3'
+        PYTHON_VERSION = '3.8'
         DATABRICKS_HOST = 'https://accounts.cloud.databricks.com'
         DATABRICKS_AUTH_TYPE = 'oauth-m2m'
         DATABRICKS_REGION = 'us-east-1'
