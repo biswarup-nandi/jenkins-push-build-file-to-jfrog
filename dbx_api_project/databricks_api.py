@@ -62,6 +62,8 @@ def main():
         # Get the bearer token
         token = utility.refresh_token()
 
+        print(token)
+
         # Get Metastore ID
         if token:
             metastore_id = utility.get_metastore_id(token)
