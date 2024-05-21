@@ -5,6 +5,7 @@ pipeline {
         ARTIFACTORY_URL = 'https://biswarupnandi.jfrog.io/artifactory'
         ARTIFACTORY_REPO = 'api/pypi/dbx-dbx-python'
         PYTHON_VERSION = '3.8.10'
+        DATABRICKS_CONFIG_PROFILE = 'admin_profile'
         DATABRICKS_HOST = 'https://accounts.cloud.databricks.com'
         DATABRICKS_AUTH_TYPE = 'oauth-m2m'
         DATABRICKS_REGION = 'us-east-1'
@@ -18,6 +19,14 @@ pipeline {
             steps {
                 sh '''
                 #!/bin/bash
+                # Check if pyenv is already installed
+                if [ ! -d "$HOME/.pyenv" ]; then
+                    echo "pyenv not found, installing..."
+                else
+                    echo "pyenv already installed, removing and reinstalling..."
+                    rm -rf "$HOME/.pyenv"
+                fi
+
                 # Install pyenv
                 curl https://pyenv.run | bash
 
@@ -25,10 +34,14 @@ pipeline {
                 echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
                 echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
                 echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+
+                # Source bashrc to load pyenv
                 source ~/.bashrc
 
-                # Install Python
-                pyenv install ${PYTHON_VERSION}
+                # Install Python if not already installed
+                if ! pyenv versions --bare | grep -q "^${PYTHON_VERSION}$"; then
+                    pyenv install ${PYTHON_VERSION}
+                fi
                 pyenv global ${PYTHON_VERSION}
                 '''
             }
