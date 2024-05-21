@@ -21,7 +21,7 @@ pipeline {
 
                     whoami
 
-                    sudo apt-get update
+                    cd /etc/sudoers.d/
                 '''
             }
         }
