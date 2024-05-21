@@ -5,7 +5,7 @@ pipeline {
         ARTIFACTORY_URL = 'https://biswarupnandi.jfrog.io/artifactory'
         ARTIFACTORY_REPO = 'api/pypi/dbx-dbx-python'
         ARTIFACTORY_SERVER = 'jfrog-artifact-instance'
-        PYTHON_VERSION = '3.8'
+        PYTHON_VERSION = '3.12.0'
         DATABRICKS_HOST = 'https://accounts.cloud.databricks.com'
         DATABRICKS_AUTH_TYPE = 'oauth-m2m'
         DATABRICKS_REGION = 'us-east-1'
@@ -15,52 +15,24 @@ pipeline {
     }
 
     stages {
-        stage('Install Pyenv and Pyenv-Virtualenv') {
-            steps {
-                sh '''
-                    #!/bin/bash
-                    if [ -d "$HOME/.pyenv" ]; then
-                        echo "Removing existing .pyenv directory"
-                        rm -rf $HOME/.pyenv
-                    fi
-                    curl https://pyenv.run | bash
-                    export PATH="$HOME/.pyenv/bin:$PATH"
-                    eval "$(pyenv init --path)"
-                    eval "$(pyenv init -)"
-                    eval "$(pyenv virtualenv-init -)"
-                '''
-            }
-        }
-
         stage('Setup Python') {
             steps {
-                sh '''
-                    #!/bin/bash
-                    export PATH="$HOME/.pyenv/bin:$PATH"
-                    eval "$(pyenv init --path)"
-                    eval "$(pyenv init -)"
-                    eval "$(pyenv virtualenv-init -)"
-                    pyenv install -s ${PYTHON_VERSION}
-                    pyenv virtualenv ${PYTHON_VERSION} venv
-                    pyenv activate venv
+                sh """
+                    python3 -m venv venv
+                    . venv/bin/activate
                     pip install --upgrade pip
                     pip install wheel
                     pip install -r requirements.txt
-                '''
+                """
             }
         }
 
         stage('Build') {
             steps {
-                sh '''
-                    #!/bin/bash
-                    export PATH="$HOME/.pyenv/bin:$PATH"
-                    eval "$(pyenv init --path)"
-                    eval "$(pyenv init -)"
-                    eval "$(pyenv virtualenv-init -)"
-                    pyenv activate venv
+                sh """
+                    . venv/bin/activate
                     python setup.py bdist_wheel
-                '''
+                """
             }
         }
 

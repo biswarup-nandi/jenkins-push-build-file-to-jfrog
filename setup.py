@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='dbx-api-project',
+    name='dbx_api_project',
     version='0.1.0',
     packages=find_packages(),
     install_requires=[
@@ -11,5 +11,5 @@ setup(
         'console_scripts': [
             'dbx-utility = dbx_api_project.databricks_api:main',
         ],
-    },
+    }
 )
