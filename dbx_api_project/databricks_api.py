@@ -4,15 +4,25 @@ import json
 
 class DBX_UTILITY:
     def __init__(self):
-        # Define the endpoint and credentials
-        self.token_base_url = f"{os.getenv('DATABRICKS_HOST')}/oidc/accounts/{os.getenv('DATABRICKS_ACCOUNT_ID')}"
-        self.base_url = f"{os.getenv('DATABRICKS_HOST')}/api/2.0/accounts/{os.getenv('DATABRICKS_ACCOUNT_ID')}"
+        # Load environment variables
+        self.token_base_url = f"{os.getenv('DATABRICKS_HOST', 'https://accounts.cloud.databricks.com')}/oidc/accounts/{os.getenv('DATABRICKS_ACCOUNT_ID')}"
+        self.base_url = f"{os.getenv('DATABRICKS_HOST', 'https://accounts.cloud.databricks.com')}/api/2.0/accounts/{os.getenv('DATABRICKS_ACCOUNT_ID')}"
         self.client_id = os.getenv('DATABRICKS_CLIENT_ID')
         self.client_secret = os.getenv('DATABRICKS_CLIENT_SECRET')
-        self.region = os.getenv('DATABRICKS_REGION')
+        self.region = os.getenv('DATABRICKS_REGION', 'us-east-1')
         self.root_s3_bucket_for_workspace = os.getenv('Root_S3_Bucket_for_Workspace')
         self.iam_arn_for_cred_config = os.getenv('IAM_ARN_for_Cred_Config')
         self.workspace_name = os.getenv('Workspace_Name')
+
+        # Validate required environment variables
+        required_vars = {
+            'DATABRICKS_ACCOUNT_ID': self.base_url,
+            'DATABRICKS_CLIENT_ID': self.client_id,
+            'DATABRICKS_CLIENT_SECRET': self.client_secret
+        }
+        for var, value in required_vars.items():
+            if not value:
+                raise EnvironmentError(f"Environment variable {var} is not set")
 
     def refresh_token(self):
         # Define the payload
@@ -44,13 +54,23 @@ class DBX_UTILITY:
         else:
             response.raise_for_status()
 
-# Create utility instance
-utility = DBX_UTILITY()
+def main():
+    # Create utility instance
+    utility = DBX_UTILITY()
 
-# Get the bearer token
-token = utility.refresh_token()
+    try:
+        # Get the bearer token
+        token = utility.refresh_token()
 
-# Get Metastore ID
-if token:
-    metastore_id = utility.get_metastore_id(token)
-    print("Metastore ID:", metastore_id)
+        # Get Metastore ID
+        if token:
+            metastore_id = utility.get_metastore_id(token)
+            print("Metastore ID:", metastore_id)
+        else:
+            print("Failed to obtain bearer token")
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    main()

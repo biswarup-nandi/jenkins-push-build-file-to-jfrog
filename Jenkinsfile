@@ -4,6 +4,7 @@ pipeline {
     environment {
         ARTIFACTORY_URL = 'https://biswarupnandi.jfrog.io/artifactory'
         ARTIFACTORY_REPO = 'api/pypi/dbx-dbx-python'
+        ARTIFACTORY_SERVER = 'jfrog-artifact-instance'
         PYTHON_VERSION = '3.12.0'
         DATABRICKS_HOST = 'https://accounts.cloud.databricks.com'
         DATABRICKS_AUTH_TYPE = 'oauth-m2m'
@@ -14,94 +15,41 @@ pipeline {
     }
 
     stages {
-        stage('System Test') {
+        stage('Setup Python') {
             steps {
-                sh '''
-                    #!/bin/bash
-
-                    whoami
-
-                    cd /etc/sudoers.d/
-                '''
+                sh """
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install wheel
+                    pip install -r requirements.txt
+                """
             }
         }
-        // stage('Setup Python') {
-        //     steps {
-        //         sh '''
-        //         #!/bin/bash
 
-        //         # Check if pyenv is already installed
-        //         if [ ! -d "$HOME/.pyenv" ]; then
-        //             echo "pyenv not found, installing..."
-        //             curl https://pyenv.run | bash
-        //         else
-        //             echo "pyenv already installed"
-        //         fi
+        stage('Build') {
+            steps {
+                sh """
+                    . venv/bin/activate
+                    python setup.py bdist_wheel
+                """
+            }
+        }
 
-        //         # Add pyenv to PATH and initialize for the current script
-        //         export PATH="$HOME/.pyenv/bin:$PATH"
-        //         eval "$(pyenv init --path)"
-        //         eval "$(pyenv virtualenv-init -)"
-
-        //         # Install Python if not already installed
-        //         if ! pyenv versions --bare | grep -q "^${PYTHON_VERSION}$"; then
-        //             pyenv install ${PYTHON_VERSION}
-        //         fi
-        //         pyenv global ${PYTHON_VERSION}
-        //         '''
-        //     }
-        // }
-
-        // stage('Install Dependencies') {
-        //     steps {
-        //         sh '''
-        //         #!/bin/bash
-        //         # Initialize pyenv for the current script
-        //         export PATH="$HOME/.pyenv/bin:$PATH"
-        //         eval "$(pyenv init --path)"
-        //         eval "$(pyenv virtualenv-init -)"
-        //         pyenv global ${PYTHON_VERSION}
-
-        //         # Use the installed Python version and install pip
-        //         python3.12 -m ensurepip --upgrade
-        //         python3.12 -m pip install --upgrade pip
-
-        //         # Install project dependencies
-        //         python3.12 -m pip install -r requirements.txt
-        //         '''
-        //     }
-        // }
-
-        // stage('Build Project') {
-        //     steps {
-        //         sh '''
-        //         #!/bin/bash
-        //         # Initialize pyenv for the current script
-        //         export PATH="$HOME/.pyenv/bin:$PATH"
-        //         eval "$(pyenv init --path)"
-        //         eval "$(pyenv virtualenv-init -)"
-        //         pyenv global ${PYTHON_VERSION}
-
-        //         # Perform the project build steps
-        //         python3.12 setup.py sdist bdist_wheel
-        //         '''
-        //     }
-        // }
-
-        // stage('Push to Artifactory') {
-        //     steps {
-        //         script {
-        //             def server = Artifactory.server 'jfrog-artifact-instance'
-        //             def uploadSpec = """{
-        //                 "files": [{
-        //                     "pattern": "dist/*",
-        //                     "target": "${ARTIFACTORY_REPO}/"
-        //                 }]
-        //             }"""
-        //             server.upload spec: uploadSpec
-        //         }
-        //     }
-        // }
+        stage('Upload to Artifactory') {
+            steps {
+                script {
+                    def server = Artifactory.server("${ARTIFACTORY_SERVER}")
+                    def uploadSpec = """{
+                        "files": [{
+                            "pattern": "dist/*.whl",
+                            "target": "${ARTIFACTORY_REPO}"
+                        }]
+                    }"""
+                    server.upload(uploadSpec)
+                }
+            }
+        }
     }
 
     post {
