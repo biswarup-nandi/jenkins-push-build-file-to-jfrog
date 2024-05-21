@@ -49,13 +49,13 @@ pipeline {
                         }]
                     }"""
                     echo "Uploading wheel files to Artifactory..."
-                    def buildInfo = server.upload(uploadSpec)
-                    echo "Upload complete: ${buildInfo}"
+                    def uploadBuildInfo = server.upload(uploadSpec)
+                    echo "Upload complete: ${uploadBuildInfo}"
 
                     // Collect build info and publish it
-                    def buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.env.capture = true // Capture environment variables
-                    server.publishBuildInfo(buildInfo)
+                    def newBuildInfo = Artifactory.newBuildInfo()
+                    newBuildInfo.env.capture = true // Capture environment variables
+                    server.publishBuildInfo(newBuildInfo)
                 }
             }
         }
