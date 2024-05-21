@@ -5,7 +5,7 @@ pipeline {
         ARTIFACTORY_URL = 'https://biswarupnandi.jfrog.io/artifactory'
         ARTIFACTORY_REPO = 'api/pypi/dbx-dbx-python'
         ARTIFACTORY_SERVER = 'jfrog-artifact-instance'
-        PYTHON_VERSION = '3.12.0'
+        PYTHON_VERSION = '3.12.3'
         DATABRICKS_HOST = 'https://accounts.cloud.databricks.com'
         DATABRICKS_AUTH_TYPE = 'oauth-m2m'
         DATABRICKS_REGION = 'us-east-1'
@@ -18,6 +18,7 @@ pipeline {
         stage('Setup Python') {
             steps {
                 sh """
+                    python3 --version
                     python3 -m venv venv
                     . venv/bin/activate
                     pip install --upgrade pip
