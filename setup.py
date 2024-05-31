@@ -8,7 +8,7 @@ import dbx_api_project
 
 setup(
     name="dbx_api_project",
-    version=dbx_api_project.__version__ + "+" + datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S"),
+    version=dbx_api_project.__version__ + "_" + datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S"),
     url="https://databricks.com",
     author="biswarup.nandi@outlook.com",
     description="wheel file for dbx automation",
