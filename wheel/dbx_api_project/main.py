@@ -5,21 +5,11 @@ import json
 class DBX_UTILITY:
     def __init__(self, DATABRICKS_ACCOUNT_ID, DATABRICKS_CLIENT_ID, DATABRICKS_CLIENT_SECRET, DATABRICKS_REGION):
         # Load environment variables
-        self.token_base_url = f"https://accounts.cloud.databricks.com'/oidc/accounts/{DATABRICKS_ACCOUNT_ID}"
-        self.base_url = f"https://accounts.cloud.databricks.com'/api/2.0/accounts/{DATABRICKS_ACCOUNT_ID}"
+        self.token_base_url = f"https://accounts.cloud.databricks.com/oidc/accounts/{DATABRICKS_ACCOUNT_ID}"
+        self.base_url = f"https://accounts.cloud.databricks.com/api/2.0/accounts/{DATABRICKS_ACCOUNT_ID}"
         self.client_id = DATABRICKS_CLIENT_ID
         self.client_secret = DATABRICKS_CLIENT_SECRET
         self.region = DATABRICKS_REGION
-
-        # Validate required environment variables
-        required_vars = {
-            'DATABRICKS_ACCOUNT_ID': self.base_url,
-            'DATABRICKS_CLIENT_ID': self.client_id,
-            'DATABRICKS_CLIENT_SECRET': self.client_secret
-        }
-        for var, value in required_vars.items():
-            if not value:
-                raise EnvironmentError(f"Environment variable {var} is not set")
 
     def refresh_token(self):
         # Define the payload
