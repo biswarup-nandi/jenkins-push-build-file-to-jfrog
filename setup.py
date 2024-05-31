@@ -22,5 +22,5 @@ setup(
     install_requires=[
         "setuptools",
         "requests"
-    ],
+    ]
 )
