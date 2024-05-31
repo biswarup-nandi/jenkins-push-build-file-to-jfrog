@@ -54,6 +54,24 @@ class DBX_UTILITY:
         else:
             response.raise_for_status()
 
+def printMetaStoreId():
+    # Create utility instance
+    utility = DBX_UTILITY()
+
+    try:
+        # Get the bearer token
+        token = utility.refresh_token()
+
+        # Get Metastore ID
+        if token:
+            metastore_id = utility.get_metastore_id(token)
+            print("Metastore ID:", metastore_id)
+        else:
+            print("Failed to obtain bearer token")
+
+    except Exception as e:
+        print(f"Error: {e}")
+
 def main():
     # Create utility instance
     utility = DBX_UTILITY()

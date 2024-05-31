@@ -1,15 +1,26 @@
 from setuptools import setup, find_packages
 
+import sys
+sys.path.append('./wheel')
+
+import datetime
+import dbx_api_project
+
 setup(
-    name='dbx_api_project',
-    version='1.0.2',
-    packages=find_packages(),
-    install_requires=[
-        'requests',
-    ],
+    name="dbx_api_project",
+    version=dbx_api_project.__version__ + "+" + datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S"),
+    url="https://databricks.com",
+    author="biswarup.nandi@outlook.com",
+    description="wheel file for dbx automation",
+    packages=find_packages(where='./wheel'),
+    package_dir={'': 'wheel'},
     entry_points={
-        'console_scripts': [
-            'dbx-utility = dbx_api_project.databricks_api:main',
-        ],
-    }
+        "packages": [
+            "main=dbx_api_project.main:main"
+        ]
+    },
+    install_requires=[
+        "setuptools",
+        "requests"
+    ],
 )
